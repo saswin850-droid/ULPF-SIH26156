@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>ULPF Architecture Document - SIH26156</title>
+<style>
+  @page {
+    size: A4;
+    margin: 14mm 14mm 14mm 14mm;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1a202c;
+    line-height: 1.35;
+    font-size: 9.5pt;
+    margin: 0;
+    padding: 0;
+  }
+  .page {
+    width: 100%;
+    min-height: 268mm;
+    box-sizing: border-box;
+  }
+  .page-break {
+    page-break-after: always;
+    break-after: page;
+    height: 0;
+    margin: 0;
+  }
+  header {
+    border-bottom: 2px solid #2b6cb0;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+  }
+  .title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  h1 {
+    font-size: 14pt;
+    margin: 0;
+    color: #2b6cb0;
+    font-weight: 700;
+  }
+  .subtitle {
+    font-size: 8pt;
+    color: #4a5568;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+  .badge {
+    background: #ebf8ff;
+    color: #2b6cb0;
+    border: 1px solid #bee3f8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 7.5pt;
+    font-weight: bold;
+  }
+  h2 {
+    font-size: 10.5pt;
+    margin: 6px 0 3px 0;
+    color: #2d3748;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 2px;
+  }
+  p {
+    margin: 0 0 5px 0;
+  }
+  ul, ol {
+    margin: 0 0 5px 0;
+    padding-left: 16px;
+  }
+  li {
+    margin-bottom: 2px;
+  }
+  code {
+    font-family: "Consolas", "Courier New", monospace;
+    background: #f7fafc;
+    border: 1px solid #edf2f7;
+    padding: 1px 3px;
+    border-radius: 3px;
+    font-size: 8.5pt;
+  }
+  pre {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    padding: 6px;
+    border-radius: 4px;
+    font-size: 7.5pt;
+    line-height: 1.15;
+    margin: 4px 0 6px 0;
+    font-family: "Consolas", monospace;
+    overflow-x: hidden;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 4px 0 6px 0;
+    font-size: 8pt;
+  }
+  th, td {
+    border: 1px solid #cbd5e0;
+    padding: 3px 6px;
+    text-align: left;
+  }
+  th {
+    background-color: #edf2f7;
+    color: #2d3748;
+    font-weight: 600;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .box {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    padding: 5px 7px;
+  }
+  .box h3 {
+    margin: 0 0 3px 0;
+    font-size: 8.5pt;
+    color: #2b6cb0;
+  }
+  .footer {
+    font-size: 7pt;
+    color: #a0aec0;
+    text-align: right;
+    margin-top: 4px;
+  }
+  @media screen {
+    body {
+      background: #e2e8f0;
+      padding: 20px;
+    }
+    .page {
+      background: white;
+      max-width: 210mm;
+      margin: 0 auto 20px auto;
+      padding: 15mm;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+  }
+</style>
+</head>
+<body>
+
+<!-- ==================== PAGE 1 ==================== -->
+<div class="page">
+  <header>
+    <div class="title-row">
+      <div>
+        <h1>Universal Log Pre-processing Framework (ULPF)</h1>
+        <div class="subtitle">System Architecture & Technical Specification · SIH 2026 (Problem Statement SIH26156 · NTRO)</div>
+      </div>
+      <div>
+        <span class="badge">Theme: Blockchain & Cybersecurity</span>
+      </div>
+    </div>
+  </header>
+
+  <h2>1. Executive Summary & Problem Framing</h2>
+  <p>
+    Enterprise IT and defense environments generate millions of heterogeneous event logs daily across firewalls, Linux/Windows servers, identity providers, and container clusters in conflicting structures (RFC3164 Syslog, JSON, CSV, CEF ArcSight, LEEF QRadar, Cisco ASA, FortiGate). Modern SOC and SIEM pipelines suffer from three fundamental failures:
+  </p>
+  <ul>
+    <li><strong>Information Destruction:</strong> Traditional ETL normalization drops unmapped vendor attributes, destroying post-incident forensic value.</li>
+    <li><strong>Broken Evidentiary Custody:</strong> Normalized entries in downstream databases lack mathematical verification linking back to original raw bytes.</li>
+    <li><strong>High Ingestion Debt:</strong> Onboarding a new hardware vendor or service format requires heavy script rewrites and pipeline downtime.</li>
+  </ul>
+  <p>
+    <strong>ULPF</strong> addresses this with a zero-loss, air-gapped log pre-processing pipeline that transforms arbitrary log streams into an OCSF-aligned canonical schema while guaranteeing mathematical traceability via deterministic SHA-256 raw-byte hashing.
+  </p>
+
+  <h2>2. System Architecture Diagram</h2>
+  <pre>
+                                  [ RAW HETEROGENEOUS LOG STREAMS ]
+                                                  │
+       ┌───────────────────────┬──────────────────┼──────────────────┬───────────────────────┐
+       ▼                       ▼                  ▼                  ▼                       ▼
+Syslog (RFC3164)        Structured JSON     CSV / Delimited     CEF (ArcSight)          LEEF (QRadar)
+(Linux, Firewalls)      (CloudWatch, K8s)   (Network IDS)       (Cisco ASA, Palo Alto)  (IBM QRadar, MS)
+       │                       │                  │                  │                       │
+       └───────────────────────┴──────────────────┼──────────────────┴───────────────────────┘
+                                                  ▼
+                                      [ PARSER REGISTRY ENGINE ]
+                                    (parse_bytes(raw_bytes) Chain)
+                                                  │
+                                                  ▼
+                                 [ CRYPTOGRAPHIC AUDIT ANCHORING ]
+                               raw_hash = SHA-256(raw_bytes)  [Immutable]
+                                                  │
+                                                  ▼
+                                [ NORMALIZED EVENT DATA MODEL (OCSF) ]
+   ┌─────────────────────────────────────────────────────────────────────────────────────────────┐
+   │ • Identification: event_id (UUIDv4), ingest_timestamp (ISO 8601 UTC)                       │
+   │ • Evidentiary:    raw_payload (lossless byte copy), raw_hash (SHA-256 forensic fingerprint) │
+   │ • Classification: parser_name, parser_version, parse_status ("full" | "fallback")          │
+   │ • OCSF Taxonomy:  event_timestamp, src_ip, dst_ip, src_port, dst_port, user, action,       │
+   │                   outcome, severity, category, hostname, message                            │
+   │ • Lossless Core:  extra: {} (captures all unmapped vendor key-values without loss)          │
+   └──────────────────────────────────────────────┬──────────────────────────────────────────────┘
+                                                  │
+                    ┌─────────────────────────────┴─────────────────────────────┐
+                    ▼                                                           ▼
+          [ PERSISTENCE LAYER ]                                       [ FASTAPI SERVICE CORE ]
+          SQLite with Indexed Query Columns                           • GET /events (Filtered search)
+          + Canonical Full Event JSON                                 • GET /events/{id} (Forensics)
+          (Decoupled for Data Lake Swapping)                          • GET /events/export/ndjson (SIEM Stream)
+                                                                      • POST /ingest/line & /ingest/file
+  </pre>
+
+  <h2>3. Core Architectural Principles</h2>
+  <div class="grid-2">
+    <div class="box">
+      <h3>Lossless Forensics & Cryptographic Audit</h3>
+      <p>Every event computes <code>SHA-256(raw_bytes)</code> at the exact entrypoint over binary input bytes. The raw payload is preserved verbatim. External investigators with only original disks can independently re-hash files to verify zero tampering.</p>
+    </div>
+    <div class="box">
+      <h3>Extensible Plug-and-Play Registry</h3>
+      <p>Parsers subclass abstract <code>BaseParser</code> (<code>can_parse</code>, <code>parse</code>). A guaranteed <code>FallbackParser</code> terminates the chain, ensuring zero event loss across unknown formats.</p>
+    </div>
+  </div>
+  <div class="footer">Page 1 of 2 · ULPF Architecture Document · SIH26156 NTRO</div>
+</div>
+
+<div class="page-break"></div>
+
+<!-- ==================== PAGE 2 ==================== -->
+<div class="page">
+  <header>
+    <div class="title-row">
+      <div>
+        <h1>Universal Log Pre-processing Framework (ULPF)</h1>
+        <div class="subtitle">System Architecture & Technical Specification · Requirements Matrix & Big Data Roadmap</div>
+      </div>
+      <div>
+        <span class="badge">Page 2 / 2</span>
+      </div>
+    </div>
+  </header>
+
+  <h2>4. Requirement Traceability Matrix (SIH26156 NTRO)</h2>
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 8%;">Req</th>
+        <th style="width: 40%;">Problem Statement Requirement</th>
+        <th style="width: 52%;">ULPF Implementation Mechanism</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>(a)</strong></td>
+        <td>Preserve complete raw event data without loss</td>
+        <td><code>raw_payload</code> stores original string untouched; <code>extra</code> dict catches unmapped vendor keys.</td>
+      </tr>
+      <tr>
+        <td><strong>(b)</strong></td>
+        <td>Extract and parse source-specific attributes</td>
+        <td>6 native parsers extract syslog headers, JSON attributes, CSV columns, CEF extensions, LEEF attributes, and Cisco ASA / FortiGate fields.</td>
+      </tr>
+      <tr>
+        <td><strong>(c)</strong></td>
+        <td>Normalize fields into a common event taxonomy</td>
+        <td>Normalized dataclass standardizing ~15 universal security attributes aligned with OCSF specifications.</td>
+      </tr>
+      <tr>
+        <td><strong>(d)</strong></td>
+        <td>Maintain traceability between norm & original</td>
+        <td>Deterministic <code>raw_hash</code> (SHA-256) computed directly from source binary bytes; recomputable by forensic auditors.</td>
+      </tr>
+      <tr>
+        <td><strong>(e)</strong></td>
+        <td>Plug-and-play onboarding of new log sources</td>
+        <td>Implement <code>BaseParser</code> in sub-50 LOC and register in <code>ParserRegistry</code>. Zero pipeline restarts.</td>
+      </tr>
+      <tr>
+        <td><strong>(f)</strong></td>
+        <td>Unified visibility across enterprise</td>
+        <td><code>GET /events</code> provides single-pane-of-glass queries across firewalls, hosts, and applications.</td>
+      </tr>
+      <tr>
+        <td><strong>(g)</strong></td>
+        <td>Efficient SIEM and Data Lake integration</td>
+        <td>High-throughput chunked HTTP streaming NDJSON export via <code>GET /events/export/ndjson</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>(h)</strong></td>
+        <td>AI/ML-ready security analytics</td>
+        <td>Consistent vectorizable feature set (source/dest IP, normalized outcomes, severity levels).</td>
+      </tr>
+      <tr>
+        <td><strong>(i)</strong></td>
+        <td>Reduced parser development effort</td>
+        <td>Standardized parser contract; fallback mechanism captures unparsed logs during development.</td>
+      </tr>
+      <tr>
+        <td><strong>(j)</strong></td>
+        <td>Deployable in an air-gapped network</td>
+        <td>Zero external dependencies at runtime; verified under container flag <code>--network none</code>.</td>
+      </tr>
+      <tr>
+        <td><strong>(k)</strong></td>
+        <td>Containerized for platform independence</td>
+        <td>Hardened <code>python:3.11-slim</code> Docker image exposing Uvicorn ASGI interface.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>5. High-Throughput Big Data Production Roadmap</h2>
+  <p>
+    While the hackathon prototype executes a self-contained SQLite storage layer for zero-dependency evaluation, the decoupled modular design directly maps to a distributed big data architecture capable of processing <strong>billions of events/day</strong>:
+  </p>
+  <pre>
+   [ Edge Telemetry Agents ] ──► [ Apache Kafka / Redpanda Cluster ] (Distributed Partitioned Buffer)
+                                                  │
+                                                  ▼
+                              [ Horizontally Scaled Stateless Workers ]
+                              (Kubernetes Pods running ULPF ParserRegistry)
+                                                  │
+                  ┌───────────────────────────────┴───────────────────────────────┐
+                  ▼                                                               ▼
+       [ Hot Tier: OpenSearch / ClickHouse ]                       [ Cold Tier: Apache Iceberg / S3 ]
+       Sub-second SOC Search & Anomaly Detection                  Lossless Parquet + Merkle Root Audit Ledger
+  </pre>
+  <ul>
+    <li><strong>Decoupled Ingestion:</strong> Kafka partitioned topics isolate collector bursts from normalization processing.</li>
+    <li><strong>Stateless Scaling:</strong> Worker pods running <code>ParserRegistry</code> scale linearly based on queue lag without database locking.</li>
+    <li><strong>Cryptographic Batch Sealing:</strong> At scale, individual SHA-256 hashes are assembled into hourly Merkle Trees, providing mathematical proof of log integrity for national security and compliance.</li>
+  </ul>
+
+  <h2>6. Architectural Trade-offs & Honest Scope</h2>
+  <ul>
+    <li><strong>Targeted Schema vs Full OCSF:</strong> Full OCSF specifies ~70 classes and hundreds of fields. ULPF intentionally scopes to an OCSF-aligned core + <code>extra</code> catch-all to guarantee low latency and zero data drop.</li>
+    <li><strong>Embedded Storage vs Distributed Cluster:</strong> SQLite was selected for the local evaluation build to guarantee out-of-the-box air-gapped execution without requiring a multi-node cluster setup during judging.</li>
+    <li><strong>CSV Severity Integrity:</strong> Network logs lacking explicit severity are retained as <code>null</code> rather than artificially inferred from <code>action</code>, preventing false-positive skew in downstream security analytics.</li>
+  </ul>
+
+  <div class="footer">Page 2 of 2 · ULPF Architecture Document · SIH26156 NTRO</div>
+</div>
+
+</body>
+</html>

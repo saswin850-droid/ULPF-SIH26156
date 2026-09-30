@@ -1,0 +1,10 @@
+<134>Oct 11 22:14:15 fw01 sshd[1234]: Failed password for admin from 10.0.0.5 port 51422 ssh2
+<134>Oct 11 22:14:20 fw01 sshd[1235]: Accepted password for svc_backup from 10.0.0.12 port 51888 ssh2
+<38>Oct 11 22:15:01 fw01 kernel: DENY IN=eth0 SRC=203.0.113.44 DST=10.0.0.1 PROTO=TCP DPT=22
+<131>Oct 11 22:16:44 dc01 sshd[5521]: Failed password for root from 198.51.100.9 port 40213 ssh2
+<134>Oct 11 22:17:02 web01 nginx[892]: 200 GET /api/health from 10.0.0.50
+<131>Oct 11 22:18:11 fw01 sshd[1240]: Failed password for admin from 203.0.113.44 port 51555 ssh2
+<134>Oct 11 22:19:00 vpn01 openvpn[220]: Accepted certificate for user jdoe from 10.0.0.77 port 1194 udp
+<131>Oct 11 22:20:35 fw01 sshd[1244]: Failed password for admin from 203.0.113.44 port 51999 ssh2
+<38>Oct 11 22:21:10 fw01 kernel: DENY IN=eth0 SRC=203.0.113.44 DST=10.0.0.1 PROTO=TCP DPT=3389
+<134>Oct 11 22:22:48 dc01 sshd[5530]: Accepted publickey for jdoe from 10.0.0.77 port 41200 ssh2

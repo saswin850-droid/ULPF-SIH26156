@@ -1,0 +1,2 @@
+LEEF:1.0|Microsoft|MSExchange|2016|1002|src=10.0.0.15 dst=172.16.0.4 usr=jdoe act=LOGIN outcome=success
+LEEF:1.0|IBM|SecurityAccessManager|9.0|4001|src=192.168.10.5 dst=10.0.0.1 usr=admin act=DENY outcome=failure

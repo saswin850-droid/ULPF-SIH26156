@@ -1,0 +1,2 @@
+<134>Oct 11 22:15:00 fw01 %ASA-6-302014: Teardown TCP connection 12345 for outside:192.168.1.100/54321 to inside:10.0.0.5/80 duration 0:00:10 bytes 1024 (user1)
+<131>Oct 11 22:16:00 fw01 %ASA-3-106023: Deny tcp src outside:172.16.0.99/4444 dst inside:10.0.0.1/22 by access-group "OUTSIDE-IN" [0x0, 0x0]

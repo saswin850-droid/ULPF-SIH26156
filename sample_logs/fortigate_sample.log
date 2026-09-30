@@ -1,0 +1,2 @@
+date=2026-09-20 time=12:00:00 devname="FGT100D" devid="FGT100D12345" type="traffic" subtype="forward" level="notice" vd="root" srcip=192.168.1.20 srcport=51234 dstip=10.0.0.1 dstport=443 action="deny" msg="Traffic denied"
+date=2026-09-20 time=12:01:00 devname="FGT100D" devid="FGT100D12345" type="traffic" subtype="forward" level="warning" vd="root" srcip=10.0.0.50 srcport=1234 dstip=8.8.8.8 dstport=53 action="accept" msg="DNS query permitted"

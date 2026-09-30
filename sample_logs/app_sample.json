@@ -1,0 +1,6 @@
+{"timestamp": "2026-09-19T10:00:01Z", "level": "ERROR", "host": "app01", "user": "admin", "src_ip": "10.0.0.5", "action": "login", "result": "failure", "message": "Invalid credentials"}
+{"timestamp": "2026-09-19T10:00:15Z", "level": "INFO", "host": "app01", "user": "svc_backup", "src_ip": "10.0.0.12", "action": "login", "result": "success", "message": "Login OK"}
+{"timestamp": "2026-09-19T10:01:02Z", "level": "WARNING", "host": "api01", "user": "jdoe", "src_ip": "10.0.0.77", "action": "password_reset_request", "result": "success", "message": "Password reset requested"}
+{"timestamp": "2026-09-19T10:02:44Z", "level": "ERROR", "host": "app01", "user": "unknown", "src_ip": "203.0.113.44", "action": "login", "result": "failure", "message": "Account locked after repeated failures", "attempts": 5}
+{"timestamp": "2026-09-19T10:03:10Z", "level": "INFO", "host": "iam01", "user": "jdoe", "action": "role_assigned", "result": "success", "message": "Assigned role: analyst", "assigned_by": "admin"}
+{"timestamp": "2026-09-19T10:04:22Z", "level": "CRITICAL", "host": "api01", "user": "admin", "src_ip": "198.51.100.9", "action": "config_change", "result": "success", "message": "Firewall rule modified", "rule_id": "FW-2291"}

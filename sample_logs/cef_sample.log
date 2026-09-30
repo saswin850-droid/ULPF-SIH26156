@@ -1,0 +1,3 @@
+CEF:0|Cisco|ASA|9.1|106023|Inbound Deny|6|src=192.168.1.50 dst=10.0.0.10 spt=54321 dpt=80 act=DENY suser=admin
+CEF:0|CheckPoint|VPN-1|R80|40001|Packet Drop|8|src=172.16.0.5 dst=10.0.0.1 spt=443 dpt=8080 act=DROP suser=attacker
+CEF:0|PaloAlto|PAN-OS|10.1|999|Permit Traffic|3|src=10.10.1.100 dst=8.8.8.8 spt=12345 dpt=53 act=ALLOW suser=user1
